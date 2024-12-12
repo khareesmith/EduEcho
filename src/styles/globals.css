@@ -1,3 +1,4 @@
+/* src/styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,19 +13,21 @@ body {
   background: rgb(var(--background-rgb));
 }
 
-/* Custom styles for STEM components */
+/* Custom styles without @apply */
 .voice-input-active {
-  @apply animate-pulse;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .pattern-note {
-  @apply transition-all duration-300;
+  transition: all 300ms;
 }
 
 .pattern-note-active {
-  @apply bg-blue-100 text-blue-700;
+  background-color: rgb(219, 234, 254);
+  color: rgb(29, 78, 216);
 }
 
 .pattern-note-inactive {
-  @apply bg-gray-200 text-gray-700;
+  background-color: rgb(229, 231, 235);
+  color: rgb(55, 65, 81);
 }
