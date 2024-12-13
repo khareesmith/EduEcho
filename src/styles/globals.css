@@ -1,4 +1,3 @@
-/* src/styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +12,6 @@ body {
   background: rgb(var(--background-rgb));
 }
 
-/* Custom styles without @apply */
 .voice-input-active {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
