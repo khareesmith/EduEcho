@@ -1,0 +1,25 @@
+{
+  "name": "voiceragtutor",
+  "version": "1.0.0",
+  "description": "## Overview VoiceRAGTutor is a voice-first education platform designed to help middle and high school students excel in STEM subjects. Using Azure OpenAI GPT-4o Realtime, it combines natural conversational interfaces with powerful Retrieval-Augmented Generation (RAG) to deliver personalized, step-by-step explanations and answers to academic queries.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.1",
+    "typescript": "^5.7.2"
+  }
+}

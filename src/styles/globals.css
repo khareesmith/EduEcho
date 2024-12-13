@@ -1,0 +1,33 @@
+/* src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+/* Custom styles without @apply */
+.voice-input-active {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.pattern-note {
+  transition: all 300ms;
+}
+
+.pattern-note-active {
+  background-color: rgb(219, 234, 254);
+  color: rgb(29, 78, 216);
+}
+
+.pattern-note-inactive {
+  background-color: rgb(229, 231, 235);
+  color: rgb(55, 65, 81);
+}
