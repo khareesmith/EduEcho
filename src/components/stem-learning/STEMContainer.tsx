@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Music, Volume2 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { SubjectSelector } from './SubjectSelector';
-import { VoiceInput } from './VoiceInput';
-import { ExamplesList } from './ExamplesList';
-import { ProgressTracker } from './ProgressTracker';
-import { VoiceRecognition } from '@/lib/audio/voiceRecognition';
-import { AzureOpenAIService } from '@/lib/azure/openai';
+import React, { useState, useEffect } from "react";
+import { Music, Volume2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { SubjectSelector } from "./SubjectSelector";
+import { VoiceInput } from "./VoiceInput";
+import { ExamplesList } from "./ExamplesList";
+import { ProgressTracker } from "./ProgressTracker";
+import { VoiceRecognition } from "@/lib/audio/voiceRecognition";
+import { AzureOpenAIService } from "@/lib/azure/openai";
 
 export const STEMContainer: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
-  const [subject, setSubject] = useState('math');
-  const [topic, setTopic] = useState('algebra');
+  const [subject, setSubject] = useState("math");
+  const [topic, setTopic] = useState("algebra");
   const [selectedExample, setSelectedExample] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-  const [transcript, setTranscript] = useState('');
+  const [transcript, setTranscript] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const voiceRecognition = React.useMemo(() => new VoiceRecognition(), []);
@@ -42,15 +42,24 @@ export const STEMContainer: React.FC = () => {
   const processVoiceInput = async (input: string) => {
     try {
       const response = await openAI.generateResponse(input);
-      setProgress(prev => Math.min(100, prev + response.confidence * 20));
+      if (!response.explanation) {
+        setError("No response received from AI");
+        return;
+      }
+      setProgress((prev) => Math.min(100, prev + response.confidence * 20));
     } catch (err) {
-      setError('Failed to process voice input');
+      console.error("Error processing voice input:", err);
+      setError(
+        `Failed to process voice input: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
     }
   };
 
   const handleSubjectChange = (newSubject: string) => {
     setSubject(newSubject);
-    setTopic('');
+    setTopic("");
     setSelectedExample(null);
     setProgress(0);
   };
@@ -86,10 +95,7 @@ export const STEMContainer: React.FC = () => {
             transcript={transcript}
           />
 
-          <ProgressTracker
-            progress={progress}
-            topic={topic}
-          />
+          <ProgressTracker progress={progress} topic={topic} />
 
           <ExamplesList
             examples={[]}

@@ -1,31 +1,44 @@
-import { AzureKeyCredential, OpenAIClient } from '@azure/openai';
-import { azureConfig } from './config';
-
-export interface GPTResponse {
-  explanation: string;
-  confidence: number;
-  sources?: string[];
-}
-
 export class AzureOpenAIService {
-  private client: OpenAIClient;
+  private client: OpenAIClient | null = null;
 
   constructor() {
-    this.client = new OpenAIClient(
-      azureConfig.openai.endpoint!,
-      new AzureKeyCredential(azureConfig.openai.apiKey!)
-    );
+    if (!azureConfig.openai.endpoint || !azureConfig.openai.apiKey) {
+      console.warn("Azure OpenAI credentials not configured");
+      return;
+    }
+
+    try {
+      this.client = new OpenAIClient(
+        azureConfig.openai.endpoint,
+        new AzureKeyCredential(azureConfig.openai.apiKey)
+      );
+    } catch (error) {
+      console.error("Failed to initialize Azure OpenAI client:", error);
+    }
   }
 
   async generateResponse(prompt: string): Promise<GPTResponse> {
+    if (!this.client) {
+      throw new Error(
+        "Azure OpenAI client is not initialized. Check your credentials."
+      );
+    }
+
     try {
       const messages = [
-        { role: "system", content: "You are a highly knowledgeable STEM tutor. Provide clear, accurate, and educational responses. Break down complex concepts into understandable explanations." },
-        { role: "user", content: prompt }
+        {
+          role: "system",
+          content:
+            "You are a highly knowledgeable STEM tutor. Provide clear, accurate, and educational responses. Break down complex concepts into understandable explanations.",
+        },
+        { role: "user", content: prompt },
       ];
 
+      const deploymentName = azureConfig.openai.deploymentName;
+      console.log("Using deployment:", deploymentName);
+
       const response = await this.client.getChatCompletions(
-        'gpt-4', // Make sure this matches your Azure deployment name
+        deploymentName,
         messages,
         {
           temperature: 0.7,
@@ -34,13 +47,19 @@ export class AzureOpenAIService {
         }
       );
 
+      if (!response.choices || response.choices.length === 0) {
+        throw new Error("No response generated from Azure OpenAI");
+      }
+
       return {
-        explanation: response.choices[0].message?.content || "I apologize, but I couldn't generate a response.",
+        explanation:
+          response.choices[0].message?.content ||
+          "I apologize, but I couldn't generate a response.",
         confidence: 0.95,
-        sources: []
+        sources: [],
       };
     } catch (error) {
-      console.error('Azure OpenAI Error:', error);
+      console.error("Azure OpenAI Error:", error);
       throw error;
     }
   }
