@@ -1,4 +1,5 @@
 import re
+import logging
 from typing import Any
 
 from azure.core.credentials import AzureKeyCredential
@@ -7,6 +8,11 @@ from azure.search.documents.aio import SearchClient
 from azure.search.documents.models import VectorizableTextQuery
 
 from rtmt import RTMiddleTier, Tool, ToolResult, ToolResultDirection
+
+import aiohttp
+import os
+
+logger = logging.getLogger(__name__)
 
 _search_tool_schema = {
     "type": "function",
@@ -57,36 +63,31 @@ async def _search_tool(
     embedding_field: str,
     use_vector_query: bool,
     args: Any) -> ToolResult:
-    print(f"Searching for '{args['query']}' in the knowledge base.")
+    logger.info(f"Searching for '{args['query']}' in the knowledge base.")
     vector_queries = []
     if use_vector_query:
         vector_queries.append(VectorizableTextQuery(text=args['query'], k_nearest_neighbors=50, fields=embedding_field))
     
-    # Remove semantic search parameters if no configuration is specified
-    search_params = {
-        'top': 5,
-        'vector_queries': vector_queries,
-        'select': f"{identifier_field}, {content_field}"
-    }
-    if semantic_configuration:
-        search_params.update({
-            'query_type': "semantic",
-            'semantic_configuration_name': semantic_configuration
-        })
-    
-    search_results = await search_client.search(
-        search_text=args['query'], 
-        query_type="semantic",
-        semantic_configuration_name=semantic_configuration,
-        top=5,
-        vector_queries=vector_queries,
-        select=f"{identifier_field}, {content_field}"
-    )
-    
-    result = ""
-    async for r in search_results:
-        result += f"[{r[identifier_field]}]: {r[content_field]}\n-----\n"
-    return ToolResult(result, ToolResultDirection.TO_SERVER)
+    try:
+        search_results = await search_client.search(
+            search_text=args['query'], 
+            top=3,
+            vector_queries=vector_queries,
+            select=f"{identifier_field}, {content_field}"
+        )
+        
+        result = ""
+        async for r in search_results:
+            content = r[content_field]
+            if len(content) > 200:
+                content = content[:200] + "..."
+                
+            result += f"[{r[identifier_field]}]: {content}\n-----\n"
+            logger.info(f"Found result: [{r[identifier_field]}]")
+        return ToolResult(result, ToolResultDirection.TO_SERVER)
+    except Exception as e:
+        logger.error(f"Search failed: {str(e)}")
+        raise
 
 KEY_PATTERN = re.compile(r'^[a-zA-Z0-9_=\-]+$')
 
@@ -98,9 +99,10 @@ async def _report_grounding_tool(
     args: Any) -> ToolResult:
     sources = [s for s in args["sources"] if KEY_PATTERN.match(s)]
     if not sources:
+        logger.info("No valid sources to ground")
         return ToolResult({"sources": []}, ToolResultDirection.TO_CLIENT)
         
-    print(f"Grounding sources: {', '.join(sources)}")
+    logger.info(f"Grounding sources: {', '.join(sources)}")
     
     # Use OR to combine multiple source searches
     search_text = " OR ".join(sources)
@@ -113,9 +115,10 @@ async def _report_grounding_tool(
     
     docs = []
     async for r in search_results:
+        logger.info(f"Found grounding document: {r[title_field]}")
         docs.append({
             "chunk_id": r[identifier_field],
-            "title": r.get(title_field, "Unknown"),  # Fallback if title missing
+            "title": r.get(title_field, "Unknown"),
             "chunk": r[content_field]
         })
     
@@ -132,7 +135,7 @@ def attach_rag_tools(rtmt: RTMiddleTier,
     use_vector_query: bool
     ) -> None:
     if not isinstance(credentials, AzureKeyCredential):
-        credentials.get_token("https://search.azure.com/.default") # warm this up before we start getting requests
+        credentials.get_token("https://search.azure.com/.default")
     search_client = SearchClient(search_endpoint, search_index, credentials, user_agent="RTMiddleTier")
 
     rtmt.tools["search"] = Tool(schema=_search_tool_schema, target=lambda args: _search_tool(search_client, semantic_configuration, identifier_field, content_field, embedding_field, use_vector_query, args))

@@ -72,3 +72,32 @@ export type ExtensionMiddleTierToolResponse = {
 export type ToolResult = {
     sources: { chunk_id: string; title: string; chunk: string }[];
 };
+
+export interface WebSocketMessage {
+    type: string;
+    [key: string]: any;
+}
+
+export interface TranscriptMessage extends WebSocketMessage {
+    type: "input_audio_buffer.transcript";
+    transcript: string;
+}
+
+export interface TextDeltaMessage extends WebSocketMessage {
+    type: "response.text.delta";
+    delta: string;
+}
+
+export interface Parameters {
+    onWebSocketOpen?: () => void;
+    onWebSocketClose?: () => void;
+    onWebSocketError?: (event: Event) => void;
+    onReceivedError?: (message: string) => void;
+    onReceivedResponseAudioDelta?: (message: { delta: ArrayBuffer }) => void;
+    onReceivedInputAudioBufferSpeechStarted?: () => void;
+    onReceivedExtensionMiddleTierToolResponse?: (message: { tool_result: string }) => void;
+    // Add new handlers
+    onReceivedInputAudioBufferTranscript?: (message: TranscriptMessage) => void;
+    onReceivedResponseTextDelta?: (message: TextDeltaMessage) => void;
+    onReceivedInputAudioBufferSpeechEnded?: () => void;
+}

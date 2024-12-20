@@ -8,6 +8,8 @@ import aiohttp
 from aiohttp import web
 from azure.core.credentials import AzureKeyCredential
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from progress_tracker import ProgressTracker
+import re
 
 logger = logging.getLogger("voicerag")
 
@@ -64,6 +66,7 @@ class RTMiddleTier:
     api_version: str = "2024-10-01-preview"
     _tools_pending = {}
     _token_provider = None
+    progress_tracker: ProgressTracker = None
 
     def __init__(self, endpoint: str, deployment: str, credentials: AzureKeyCredential | DefaultAzureCredential, voice_choice: Optional[str] = None):
         self.endpoint = endpoint
@@ -76,10 +79,12 @@ class RTMiddleTier:
         else:
             self._token_provider = get_bearer_token_provider(credentials, "https://cognitiveservices.azure.com/.default")
             self._token_provider() # Warm up during startup so we have a token cached when the first request arrives
+        self.progress_tracker = ProgressTracker()
 
     async def _process_message_to_client(self, msg: str, client_ws: web.WebSocketResponse, server_ws: web.WebSocketResponse) -> Optional[str]:
         message = json.loads(msg.data)
         updated_message = msg.data
+        
         if message is not None:
             match message["type"]:
                 case "session.created":
@@ -94,8 +99,25 @@ class RTMiddleTier:
                     updated_message = json.dumps(message)
 
                 case "response.output_item.added":
-                    if "item" in message and message["item"]["type"] == "function_call":
-                        updated_message = None
+                    if "item" in message and message["item"]["type"] == "text":
+                        text = message["item"]["text"]
+                        question_match = re.search(r'QUESTION: (.*?)\s*ANSWER: (.*?)\s*DIFFICULTY: (.*?)(?:\s|$)', text)
+                        if question_match:
+                            question = question_match.group(1)
+                            answer = question_match.group(2)
+                            difficulty = question_match.group(3).lower()
+                            
+                            session_id = message.get("session_id")
+                            if session_id:
+                                self._current_questions[session_id] = {
+                                    "question": question,
+                                    "answer": answer,
+                                    "difficulty": difficulty
+                                }
+                                
+                            text = text.replace(question_match.group(0), question)
+                            message["item"]["text"] = text
+                            updated_message = json.dumps(message)
 
                 case "conversation.item.created":
                     if "item" in message and message["item"]["type"] == "function_call":
@@ -115,10 +137,12 @@ class RTMiddleTier:
                 case "response.output_item.done":
                     if "item" in message and message["item"]["type"] == "function_call":
                         item = message["item"]
+                        logger.info(f"Processing tool call: {item['name']}")
                         tool_call = self._tools_pending[message["item"]["call_id"]]
                         tool = self.tools[item["name"]]
                         args = item["arguments"]
                         result = await tool.target(json.loads(args))
+                        logger.info(f"Tool result direction: {result.destination}")
                         await server_ws.send_json({
                             "type": "conversation.item.create",
                             "item": {
@@ -128,8 +152,7 @@ class RTMiddleTier:
                             }
                         })
                         if result.destination == ToolResultDirection.TO_CLIENT:
-                            # TODO: this will break clients that don't know about this extra message, rewrite 
-                            # this to be a regular text message with a special marker of some sort
+                            logger.info("Sending tool result to client")
                             await client_ws.send_json({
                                 "type": "extension.middle_tier_tool_response",
                                 "previous_item_id": tool_call.previous_id,
@@ -140,18 +163,94 @@ class RTMiddleTier:
 
                 case "response.done":
                     if len(self._tools_pending) > 0:
-                        self._tools_pending.clear() # Any chance tool calls could be interleaved across different outstanding responses?
+                        self._tools_pending.clear()
                         await server_ws.send_json({
                             "type": "response.create"
                         })
                     if "response" in message:
                         replace = False
-                        for i, output in enumerate(reversed(message["response"]["output"])):
+                        for output in message["response"]["output"]:
                             if output["type"] == "function_call":
-                                message["response"]["output"].pop(i)
                                 replace = True
+                        
+                        # Add a newline after each complete response
+                        await client_ws.send_json({
+                            "type": "response.text.delta",
+                            "delta": "\n\n"
+                        })
+                        
                         if replace:
-                            updated_message = json.dumps(message)                        
+                            message["response"]["output"] = [
+                                output for output in message["response"]["output"]
+                                if output["type"] != "function_call"
+                            ]
+                            updated_message = json.dumps(message)
+
+                case "input_audio_buffer.transcript":
+                    # Forward transcript messages to the client
+                    await client_ws.send_json({
+                        "type": "input_audio_buffer.transcript",
+                        "transcript": message.get("transcript", "")
+                    })
+                    updated_message = None
+
+                case "response.text":
+                    # Forward text messages to the client
+                    await client_ws.send_json({
+                        "type": "response.text.delta",
+                        "delta": message.get("text", "")
+                    })
+                    updated_message = None
+
+                case "response.text.delta":
+                    # Forward text delta messages to the client
+                    await client_ws.send_json({
+                        "type": "response.text.delta",
+                        "delta": message.get("text", "")
+                    })
+                    updated_message = None
+
+                case "response.text.end":
+                    # Forward text end messages to the client
+                    await client_ws.send_json({
+                        "type": "response.text.delta",
+                        "delta": "\n"  # Add a newline at the end of the response
+                    })
+                    updated_message = None
+
+                case "input_audio_buffer.speech_ended":
+                    # Forward speech ended messages to the client
+                    await client_ws.send_json({
+                        "type": "input_audio_buffer.speech_ended"
+                    })
+                    updated_message = None
+
+                case "response.audio_transcript.delta":
+                    if "text" in message:
+                        text = message["text"]
+                        if text:
+                            await client_ws.send_json({
+                                "type": "response.text.delta",
+                                "delta": text
+                            })
+                    elif "delta" in message:
+                        text = message["delta"]
+                        if text:
+                            await client_ws.send_json({
+                                "type": "response.text.delta",
+                                "delta": text
+                            })
+                    updated_message = None
+
+                case "response.content_part.added":
+                    if "content" in message and isinstance(message["content"], list):
+                        for content in message["content"]:
+                            if content.get("type") == "text":
+                                await client_ws.send_json({
+                                    "type": "response.text.delta",
+                                    "delta": content.get("text", "")
+                                })
+                    updated_message = None
 
         return updated_message
 

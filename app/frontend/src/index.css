@@ -75,3 +75,41 @@
         @apply bg-background text-foreground;
     }
 }
+
+@keyframes wave-slow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes wave-fast {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-wave-slow {
+    animation: wave-slow 15s linear infinite;
+}
+
+.animate-wave-fast {
+    animation: wave-fast 10s linear infinite;
+}
+
+.bg-gradient-radial {
+    transition: all 0.5s ease-in-out;
+}
+
+@font-face {
+    font-family: "More Sugar";
+    src: url("./assets/more-sugar.regular.ttf") format("truetype"),
+        url("./assets/more-sugar.regular.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}

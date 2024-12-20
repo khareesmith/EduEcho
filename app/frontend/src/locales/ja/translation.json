@@ -1,21 +1,21 @@
 {
     "app": {
-        "title": "データと話す",
-        "footer": "Azure AI Search + Azure OpenAI で構築",
-        "stopRecording": "録音を停止",
-        "startRecording": "録音を開始",
-        "stopConversation": "会話を停止"
+        "title": "EDU ECHO",
+        "footer": "Microsoft 2024 イノベーションチャレンジのために構築",
+        "stopRecording": "話すのをやめる",
+        "startRecording": "話し始める",
+        "stopConversation": "会話を終了する"
     },
     "status": {
-        "notRecordingMessage": "Contoso 従業員の福利厚生について質問してください",
-        "conversationInProgress": "会話が進行中"
+        "notRecordingMessage": "チューターと話そう！",
+        "conversationInProgress": "会話中"
     },
     "history": {
         "answerHistory": "回答履歴",
-        "noHistory": "まだ履歴はありません。"
+        "noHistory": "履歴はまだありません。"
     },
     "groundingFiles": {
-        "title": "グラウンディング ファイル",
-        "description": "回答をグラウンディングするために使用されるファイル。"
+        "title": "基盤ファイル",
+        "description": "回答を補強するために使用されるファイル。"
     }
 }

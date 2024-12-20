@@ -55,8 +55,27 @@ export default {
                 "7xl": ["4.5rem", { lineHeight: "1.3" }],
                 "4xl": ["2.5rem", { lineHeight: "3.2rem" }],
                 "3xl": ["2rem", { lineHeight: "2.8rem" }]
+            },
+            keyframes: {
+                "wave-slow": {
+                    "0%": { transform: "translateX(0) translateY(0)" },
+                    "50%": { transform: "translateX(-25%) translateY(-25%)" },
+                    "100%": { transform: "translateX(-50%) translateY(-50%)" }
+                },
+                "wave-fast": {
+                    "0%": { transform: "translateX(0) translateY(0)" },
+                    "50%": { transform: "translateX(25%) translateY(25%)" },
+                    "100%": { transform: "translateX(50%) translateY(50%)" }
+                }
+            },
+            animation: {
+                "wave-slow": "wave-slow 20s linear infinite",
+                "wave-fast": "wave-fast 15s linear infinite"
+            },
+            backgroundImage: {
+                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))"
             }
         }
     },
-    plugins: [require("tailwindcss-animate")]
+    plugins: [require("tailwind-scrollbar"), require("tailwindcss-animate")]
 };

@@ -1,13 +1,13 @@
 {
     "app": {
-        "title": "Talk with History",
-        "footer": "Built with Azure AI Search + Azure OpenAI",
-        "stopRecording": "Stop recording",
-        "startRecording": "Start recording",
+        "title": "EDU ECHO",
+        "footer": "Built for the Microsoft 2024 Innovation Challenge",
+        "stopRecording": "Stop talking",
+        "startRecording": "Start talking",
         "stopConversation": "Stop conversation"
     },
     "status": {
-        "notRecordingMessage": "Ask anything about early World History!",
+        "notRecordingMessage": "Talk to a tutor!",
         "conversationInProgress": "Conversation in progress"
     },
     "history": {

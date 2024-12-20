@@ -1,13 +1,13 @@
 {
     "app": {
-        "title": "Habla con tus datos",
-        "footer": "Creado con Azure AI Search + Azure OpenAI",
-        "stopRecording": "Detener grabación",
-        "startRecording": "Comenzar grabación",
-        "stopConversation": "Detener conversación"
+        "title": "EDU ECHO",
+        "footer": "Creado para el Desafío de Innovación Microsoft 2024",
+        "stopRecording": "Deja de hablar",
+        "startRecording": "Comienza a hablar",
+        "stopConversation": "Terminar conversación"
     },
     "status": {
-        "notRecordingMessage": "Pregunta cualquier cosa sobre los beneficios de los empleados de Contoso",
+        "notRecordingMessage": "¡Habla con un tutor!",
         "conversationInProgress": "Conversación en progreso"
     },
     "history": {
@@ -15,7 +15,7 @@
         "noHistory": "Aún no hay historial."
     },
     "groundingFiles": {
-        "title": "Archivos de fundamentación",
+        "title": "Archivos de referencia",
         "description": "Archivos utilizados para fundamentar las respuestas."
     }
 }

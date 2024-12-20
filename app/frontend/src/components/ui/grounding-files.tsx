@@ -1,68 +1,71 @@
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { FileText } from "lucide-react";
+import { LoadingAnimation } from "./loading-animation";
 
 import { GroundingFile as GroundingFileType } from "@/types";
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import GroundingFile from "./grounding-file";
-import { useRef } from "react";
-import { useTranslation } from "react-i18next";
 
 type Properties = {
     files: GroundingFileType[];
     onSelected: (file: GroundingFileType) => void;
+    isLoading?: boolean;
 };
 
-const variants: Variants = {
-    hidden: { opacity: 0, scale: 0.8, y: 20 },
-    visible: (i: number) => ({
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        transition: {
-            delay: i * 0.1,
-            duration: 0.3,
-            type: "spring",
-            stiffness: 300,
-            damping: 20
-        }
-    })
-};
-
-export function GroundingFiles({ files, onSelected }: Properties) {
+export function GroundingFiles({ files, onSelected, isLoading = false }: Properties) {
     const { t } = useTranslation();
-    const isAnimating = useRef(false);
 
+    // Don't render anything if there are no files and we're not loading
     if (files.length === 0) {
         return null;
     }
 
     return (
-        <Card className="m-4 max-w-full md:max-w-md lg:min-w-96 lg:max-w-2xl">
-            <CardHeader>
-                <CardTitle className="text-xl">{t("groundingFiles.title")}</CardTitle>
-                <CardDescription>{t("groundingFiles.description")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <AnimatePresence>
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className={`h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"}`}
-                        onLayoutAnimationStart={() => (isAnimating.current = true)}
-                        onLayoutAnimationComplete={() => (isAnimating.current = false)}
-                    >
-                        <div className="flex flex-wrap gap-2">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                duration: 0.5
+            }}
+            className="relative z-50 w-full"
+        >
+            <div className="mx-auto w-full max-w-4xl rounded-2xl border border-orange-100 bg-white p-6">
+                <div className="mb-6 flex items-center space-x-3">
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }} className="rounded-lg bg-orange-100 p-2">
+                        <FileText className="h-6 w-6 text-[#ff914d]" />
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+                        <h2 className="text-2xl font-bold text-[#d51d35]">{t("groundingFiles.title")}</h2>
+                        <p className="text-[#ff914d]">{t("groundingFiles.description")}</p>
+                    </motion.div>
+                </div>
+
+                <motion.div className="relative" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                    {isLoading ? (
+                        <div className="flex justify-center py-4">
+                            <LoadingAnimation />
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {files.map((file, index) => (
-                                <motion.div key={index} variants={variants} initial="hidden" animate="visible" custom={index}>
-                                    <GroundingFile key={index} value={file} onClick={() => onSelected(file)} />
+                                <motion.div
+                                    key={file.id}
+                                    className="relative"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.5 + index * 0.1 }}
+                                >
+                                    <GroundingFile value={file} onClick={() => onSelected(file)} />
                                 </motion.div>
                             ))}
                         </div>
-                    </motion.div>
-                </AnimatePresence>
-            </CardContent>
-        </Card>
+                    )}
+                </motion.div>
+            </div>
+        </motion.div>
     );
 }

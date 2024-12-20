@@ -9,11 +9,13 @@ import {
     ResponseDone,
     SessionUpdateCommand,
     ExtensionMiddleTierToolResponse,
-    ResponseInputAudioTranscriptionCompleted
+    ResponseInputAudioTranscriptionCompleted,
+    TranscriptMessage,
+    TextDeltaMessage
 } from "@/types";
 
 type Parameters = {
-    useDirectAoaiApi?: boolean; // If true, the middle tier will be skipped and the AOAI ws API will be called directly
+    useDirectAoaiApi?: boolean;
     aoaiEndpointOverride?: string;
     aoaiApiKeyOverride?: string;
     aoaiModelOverride?: string;
@@ -31,6 +33,9 @@ type Parameters = {
     onReceivedResponseAudioTranscriptDelta?: (message: ResponseAudioTranscriptDelta) => void;
     onReceivedInputAudioTranscriptionCompleted?: (message: ResponseInputAudioTranscriptionCompleted) => void;
     onReceivedError?: (message: Message) => void;
+    onReceivedInputAudioBufferTranscript?: (message: TranscriptMessage) => void;
+    onReceivedResponseTextDelta?: (message: TextDeltaMessage) => void;
+    onReceivedInputAudioBufferSpeechEnded?: () => void;
 };
 
 export default function useRealTime({
@@ -49,7 +54,10 @@ export default function useRealTime({
     onReceivedInputAudioBufferSpeechStarted,
     onReceivedExtensionMiddleTierToolResponse,
     onReceivedInputAudioTranscriptionCompleted,
-    onReceivedError
+    onReceivedError,
+    onReceivedInputAudioBufferTranscript,
+    onReceivedResponseTextDelta,
+    onReceivedInputAudioBufferSpeechEnded
 }: Parameters) {
     const wsEndpoint = useDirectAoaiApi
         ? `${aoaiEndpointOverride}/openai/realtime?api-key=${aoaiApiKeyOverride}&deployment=${aoaiModelOverride}&api-version=2024-10-01-preview`
@@ -122,6 +130,15 @@ export default function useRealTime({
                 break;
             case "input_audio_buffer.speech_started":
                 onReceivedInputAudioBufferSpeechStarted?.(message);
+                break;
+            case "input_audio_buffer.transcript":
+                onReceivedInputAudioBufferTranscript?.(message as TranscriptMessage);
+                break;
+            case "response.text.delta":
+                onReceivedResponseTextDelta?.(message as TextDeltaMessage);
+                break;
+            case "input_audio_buffer.speech_ended":
+                onReceivedInputAudioBufferSpeechEnded?.();
                 break;
             case "conversation.item.input_audio_transcription.completed":
                 onReceivedInputAudioTranscriptionCompleted?.(message as ResponseInputAudioTranscriptionCompleted);
