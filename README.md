@@ -128,9 +128,12 @@ Click the "Start conversation button", say "Hello!", and then ask a question abo
 Visit [Edu Echo](https://capps-backend-a34xrvcygjq3u.yellowbush-ff8deaff.eastus2.azurecontainerapps.io) to see the app in action!
 
 ## Screenshots
+
 ![app screenshot](docs/EduEchoCoversation2.png)
+
 ![app screenshot](docs/EduEchoGroundingFile.png)
-![app screenshot](docs/EduEchoLanguage.png)
+
+![app screenshot](docs/EduEchoLanguage2.png)
 
 ## Guidance
 
@@ -145,7 +148,7 @@ However, you can try the [Azure pricing calculator](https://azure.com/e/a87a169b
 * Azure Blob Storage: Standard tier with ZRS (Zone-redundant storage). Pricing per storage and read operations. [Pricing](https://azure.microsoft.com/pricing/details/storage/blobs/)
 * Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
 
-To reduce costs, you can switch to free SKUs for various services, but those SKUs have limitations.
+To reduce costs, you can switch to free SKUs for various services, but certain SKUs have limitations.
 
 ⚠️ To avoid unnecessary costs, remember to take down your app if it's no longer in use by deleting the resource group in the Portal.
 
