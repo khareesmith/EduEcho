@@ -14,7 +14,7 @@ Students can ask questions like:
 - **Interactive Voice Tutoring**: Engage in natural, conversational learning with voice inputs and outputs.
 - **Step-by-Step Problem Solving**: Break down complex topics into manageable explanations.
 - **Personalized Learning**: Adapt explanations to the student's grade level and subject proficiency.
-- **Language Support**: Supports English, Spanish, French, German, and Chinese.
+- **Multi-Language Support**: Supports English, Spanish, French, German, Japanese, and Chinese.
 - **Real-Time Citations**: Show references and sources for all responses to ensure credibility.
 - **Focused Subject Support**: Currently tailored for math and language arts for 4th, 5th, and 6th grades.
 - **RAG (Retrieval Augmented Generation)**: The app uses the Azure AI Search service to answer questions about a knowledge base, and sends the retrieved documents to the GPT-4o Realtime API to generate a response.
@@ -26,6 +26,7 @@ The application leverages the following Azure services:
 - **Azure OpenAI Text Embedding API**: Generates embeddings for the indexed documents.
 - **Azure AI Search**: Retrieves relevant educational content from indexed academic resources. Uses semantic ranking to return the most relevant documents.
 - **Azure Storage**: Stores indexed BLOB storage documents for retrieval.
+- **Azure Container Apps**: Hosts the application in a containerized environment on Azure.
 
 ![Architecture Diagram](docs/RTMTPattern.png)
 
@@ -119,9 +120,17 @@ Run the application locally for development using the setup provided in the `scr
 Access the app at [http://localhost:8765](http://localhost:8765)
 
 Once the app is running, when you navigate to the URL above you should see the start screen of the app:
-   ![app screenshot](docs/EduEcho.png)
+![app screenshot](docs/EduEchoMain.png)
 
-Click the "Start conversation button", say "Hello", and then ask a question about the documents in the `data` folder.
+Click the "Start conversation button", say "Hello!", and then ask a question about the documents in the `data` folder.
+
+`Now Hosted on Azure!`
+Visit [Edu Echo](https://capps-backend-a34xrvcygjq3u.yellowbush-ff8deaff.eastus2.azurecontainerapps.io) to see the app in action!
+
+## Screenshots
+![app screenshot](docs/EduEchoCoversation2.png)
+![app screenshot](docs/EduEchoGroundingFile.png)
+![app screenshot](docs/EduEchoLanguage.png)
 
 ## Guidance
 
