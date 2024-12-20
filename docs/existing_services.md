@@ -95,4 +95,4 @@ AZURE_SEARCH_TITLE_FIELD=sourcepage
 AZURE_SEARCH_EMBEDDING_FIELD=embedding
 ```
 
-Then follow the steps in the project's [README](../README.md@#development-server) to run the app locally.
+Then follow the steps in the project's [README](../README.md) to run the app locally.

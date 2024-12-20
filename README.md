@@ -1,4 +1,4 @@
-# Edu Echo: Your Interactive Voice-Based Learning Assistant
+# Edu Echo: Where Questions Spark Conversations, and Learning Comes Alive
 
 ## Overview
 Edu Echo is a voice-first education platform designed to help 4th, 5th, and 6th grade students excel in math and language arts. Using Azure OpenAI GPT-4o Realtime, it combines natural conversational interfaces with powerful Retrieval-Augmented Generation (RAG) to deliver personalized, step-by-step explanations and answers to academic queries.
