@@ -4,7 +4,8 @@
         "footer": "Microsoft 2024 イノベーションチャレンジのために構築",
         "stopRecording": "話すのをやめる",
         "startRecording": "話し始める",
-        "stopConversation": "会話を終了する"
+        "stopConversation": "会話を終了する",
+        "changeLanguage": "言語を変更"
     },
     "status": {
         "notRecordingMessage": "チューターと話そう！",

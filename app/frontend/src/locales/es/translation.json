@@ -2,9 +2,10 @@
     "app": {
         "title": "EDU ECHO",
         "footer": "Creado para el Desafío de Innovación Microsoft 2024",
-        "stopRecording": "Deja de hablar",
-        "startRecording": "Comienza a hablar",
-        "stopConversation": "Terminar conversación"
+        "stopRecording": "Dejar de hablar",
+        "startRecording": "Comenzar a hablar",
+        "stopConversation": "Dejar de hablar",
+        "changeLanguage": "Cambiar idioma"
     },
     "status": {
         "notRecordingMessage": "¡Habla con un tutor!",
@@ -15,7 +16,7 @@
         "noHistory": "Aún no hay historial."
     },
     "groundingFiles": {
-        "title": "Archivos de referencia",
-        "description": "Archivos utilizados para fundamentar las respuestas."
+        "title": "Materiales de Aprendizaje",
+        "description": "Archivos de tu libro de texto (utilizados para fundamentar respuestas)."
     }
 }

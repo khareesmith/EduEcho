@@ -4,7 +4,8 @@
         "footer": "Built for the Microsoft 2024 Innovation Challenge",
         "stopRecording": "Stop talking",
         "startRecording": "Start talking",
-        "stopConversation": "Stop conversation"
+        "stopConversation": "Stop talking",
+        "changeLanguage": "Change Language"
     },
     "status": {
         "notRecordingMessage": "Talk to a tutor!",
@@ -15,7 +16,7 @@
         "noHistory": "No history yet."
     },
     "groundingFiles": {
-        "title": "Grounding files",
-        "description": "Files used to ground the answers."
+        "title": "Learning Materials",
+        "description": "Files from your textbook (used to ground answers)."
     }
 }

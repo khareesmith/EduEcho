@@ -1,0 +1,22 @@
+{
+    "app": {
+        "title": "EDU ECHO",
+        "footer": "为微软2024创新挑战赛打造",
+        "stopRecording": "停止说话",
+        "startRecording": "开始说话",
+        "stopConversation": "停止说话",
+        "changeLanguage": "更改语言"
+    },
+    "status": {
+        "notRecordingMessage": "与导师交谈！",
+        "conversationInProgress": "会话进行中"
+    },
+    "history": {
+        "answerHistory": "回答历史",
+        "noHistory": "尚无历史记录。"
+    },
+    "groundingFiles": {
+        "title": "学习材料",
+        "description": "来自您的教材的文件（用于回答基础）。"
+    }
+}

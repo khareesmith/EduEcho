@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, FileText, Copy, Check } from "lucide-react";
+import { X, Copy, Check, BookOpen } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./button";
 import { GroundingFile } from "@/types";
@@ -40,21 +40,12 @@ export default function GroundingFileView({ groundingFile, onClosed }: Propertie
     const [copied, setCopied] = useState(false);
 
     const truncateContent = (content: string) => {
-        // First try to find "Practice Questions:" and truncate there
         const practiceQuestionsIndex = content.indexOf("Practice Questions:");
-
-        // If "Practice Questions:" is found, truncate there
         if (practiceQuestionsIndex !== -1) {
             return content.substring(0, practiceQuestionsIndex).trim();
         }
-
-        // If not found, limit to 1000 characters as a fallback
         const MAX_CHARS = 1000;
-        if (content.length > MAX_CHARS) {
-            return content.substring(0, MAX_CHARS).trim() + "...";
-        }
-
-        return content;
+        return content.length > MAX_CHARS ? content.substring(0, MAX_CHARS).trim() + "..." : content;
     };
 
     const handleCopy = async () => {
@@ -81,31 +72,47 @@ export default function GroundingFileView({ groundingFile, onClosed }: Propertie
                         initial="hidden"
                         animate="visible"
                         exit="exit"
-                        className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-lg bg-white/95 p-6 shadow-xl ring-1 ring-black/5 backdrop-blur-sm"
+                        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-white/95 to-orange-50/95 p-6 shadow-xl ring-1 ring-black/5 backdrop-blur-sm"
                         onClick={e => e.stopPropagation()}
                     >
+                        {/* Header */}
                         <div className="mb-4 flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <FileText className="h-5 w-5 text-[#ff914d]" />
-                                <h2 className="text-xl font-bold text-[#d51d35]">{groundingFile.name}</h2>
+                            <div className="flex items-center space-x-3">
+                                <div className="rounded-lg bg-orange-100 p-2">
+                                    <BookOpen className="h-5 w-5 text-[#ff914d]" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-[#d51d35]">{groundingFile.name}</h2>
+                                    <p className="text-sm text-[#ff914d]">Learning Material</p>
+                                </div>
                             </div>
                             <div className="flex space-x-2">
-                                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#ff914d]" onClick={handleCopy}>
+                                <Button variant="ghost" size="sm" className="group relative text-gray-500 hover:text-[#ff914d]" onClick={handleCopy}>
                                     {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                                    <span className="absolute -bottom-8 left-1/2 z-50 -translate-x-1/2 transform whitespace-nowrap text-xs font-medium text-gray-600 opacity-0 transition-opacity group-hover:opacity-100">
+                                        {copied ? "Copied!" : "Copy text"}
+                                    </span>
                                 </Button>
-                                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#ff914d]" onClick={() => onClosed()}>
+                                <Button variant="ghost" size="sm" className="group relative text-gray-500 hover:text-[#ff914d]" onClick={() => onClosed()}>
                                     <X className="h-5 w-5" />
+                                    <span className="absolute -bottom-8 left-1/2 z-50 -translate-x-1/2 transform whitespace-nowrap text-xs font-medium text-gray-600 opacity-0 transition-opacity group-hover:opacity-100">
+                                        Close
+                                    </span>
                                 </Button>
                             </div>
                         </div>
-                        <div className="flex-grow overflow-hidden">
-                            <motion.pre
+
+                        {/* Content */}
+                        <div className="flex-grow overflow-hidden rounded-xl bg-white/50 p-1">
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="h-[40vh] overflow-auto rounded-md bg-gray-50/80 p-4 text-sm shadow-inner"
+                                className="h-[40vh] overflow-auto rounded-lg bg-gradient-to-br from-white/80 to-orange-50/80 p-6 text-sm shadow-inner"
                             >
-                                <code className="block text-gray-700">{truncateContent(groundingFile.content)}</code>
-                            </motion.pre>
+                                <div className="prose prose-sm max-w-none">
+                                    <div className="whitespace-pre-wrap font-medium text-gray-700">{truncateContent(groundingFile.content)}</div>
+                                </div>
+                            </motion.div>
                         </div>
                     </motion.div>
                 </motion.div>

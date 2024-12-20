@@ -4,18 +4,19 @@
         "footer": "Créé pour le Défi d'Innovation Microsoft 2024",
         "stopRecording": "Arrêter de parler",
         "startRecording": "Commencer à parler",
-        "stopConversation": "Arrêter la conversation"
+        "stopConversation": "Arrêter de parler",
+        "changeLanguage": "Changer de langue"
     },
     "status": {
-        "notRecordingMessage": "Parlez à un tuteur !",
+        "notRecordingMessage": "Parlez à un tuteur",
         "conversationInProgress": "Conversation en cours"
     },
     "history": {
         "answerHistory": "Historique des réponses",
-        "noHistory": "Aucun historique pour le moment."
+        "noHistory": "Pas encore d'historique."
     },
     "groundingFiles": {
-        "title": "Fichiers de base",
-        "description": "Fichiers utilisés pour étayer les réponses."
+        "title": "Matériaux d'Apprentissage",
+        "description": "Fichiers de votre manuel (utilisés pour appuyer les réponses)."
     }
 }

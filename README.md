@@ -10,9 +10,11 @@ Students can ask questions like:
 - "Please explain context clues in my 5th grade language arts class."
 
 ## Features
+
 - **Interactive Voice Tutoring**: Engage in natural, conversational learning with voice inputs and outputs.
 - **Step-by-Step Problem Solving**: Break down complex topics into manageable explanations.
 - **Personalized Learning**: Adapt explanations to the student's grade level and subject proficiency.
+- **Language Support**: Supports English, Spanish, French, German, and Chinese.
 - **Real-Time Citations**: Show references and sources for all responses to ensure credibility.
 - **Focused Subject Support**: Currently tailored for math and language arts for 4th, 5th, and 6th grades.
 - **RAG (Retrieval Augmented Generation)**: The app uses the Azure AI Search service to answer questions about a knowledge base, and sends the retrieved documents to the GPT-4o Realtime API to generate a response.
@@ -111,7 +113,7 @@ Run the application locally for development using the setup provided in the `scr
   OR
 
   ```pwsh
-  powershell.exe .\scripts\start.ps1
+  powershell.exe scripts\start.ps1
   ```
 
 Access the app at [http://localhost:8765](http://localhost:8765)

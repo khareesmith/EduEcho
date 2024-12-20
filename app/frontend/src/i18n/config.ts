@@ -6,7 +6,9 @@ import { initReactI18next } from "react-i18next";
 import enTranslation from "../locales/en/translation.json";
 import esTranslation from "../locales/es/translation.json";
 import frTranslation from "../locales/fr/translation.json";
+import deTranslation from "../locales/de/translation.json";
 import jaTranslation from "../locales/ja/translation.json";
+import zhTranslation from "../locales/zh/translation.json";
 
 export const supportedLngs: { [key: string]: { name: string; locale: string } } = {
     en: {
@@ -21,9 +23,17 @@ export const supportedLngs: { [key: string]: { name: string; locale: string } } 
         name: "Français",
         locale: "fr-FR"
     },
+    de: {
+        name: "Deutsch",
+        locale: "de-DE"
+    },
     ja: {
         name: "日本語",
         locale: "ja-JP"
+    },
+    zh: {
+        name: "中文",
+        locale: "zh-CN"
     }
 };
 
@@ -31,20 +41,20 @@ i18next
     .use(HttpApi)
     .use(LanguageDetector)
     .use(initReactI18next)
-    // init i18next
-    // for all options read: https://www.i18next.com/overview/configuration-options
     .init({
         resources: {
             en: { translation: enTranslation },
             es: { translation: esTranslation },
             fr: { translation: frTranslation },
-            ja: { translation: jaTranslation }
+            de: { translation: deTranslation },
+            ja: { translation: jaTranslation },
+            zh: { translation: zhTranslation }
         },
         fallbackLng: "en",
         supportedLngs: Object.keys(supportedLngs),
         debug: import.meta.env.DEV,
         interpolation: {
-            escapeValue: false // not needed for react as it escapes by default
+            escapeValue: false
         }
     });
 

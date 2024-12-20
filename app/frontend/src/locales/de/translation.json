@@ -1,0 +1,22 @@
+{
+    "app": {
+        "title": "EDU ECHO",
+        "footer": "Erstellt für die Microsoft 2024 Innovation Challenge",
+        "stopRecording": "Aufhören zu sprechen",
+        "startRecording": "Anfangen zu sprechen",
+        "stopConversation": "Aufhören zu sprechen",
+        "changeLanguage": "Sprache ändern"
+    },
+    "status": {
+        "notRecordingMessage": "Sprechen Sie mit einem Tutor!",
+        "conversationInProgress": "Gespräch läuft"
+    },
+    "history": {
+        "answerHistory": "Antwortverlauf",
+        "noHistory": "Noch kein Verlauf."
+    },
+    "groundingFiles": {
+        "title": "Lernmaterialien",
+        "description": "Dateien aus Ihrem Lehrbuch (zum Fundieren der Antworten verwendet)."
+    }
+}
