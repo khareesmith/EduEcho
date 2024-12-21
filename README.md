@@ -57,31 +57,34 @@ Ensure you have the following installed:
     cd EduEcho
     ```
 
-3. Create a new Azure Developer CLI environment:
+3. Login to your Azure account:
+
+    ```bash
+    azd auth login
+    ```
+
+4. Create a new Azure Developer CLI environment:
 
     ```bash
     azd env new
     ```
 
-4. Deploy the app:
+    Enter a name that will be used for the resource group.
+    This will create a new folder in the `.azure` folder, and set it as the active environment for any calls to `azd` going forward.
+
+5. (Optional) This is the point where you can customize the deployment by setting azd environment variables, in order to [use existing services](docs/existing_services.md) or [customize the voice choice](docs/customizing_deploy.md).
+
+6. Deploy the app:
 
     ```bash
     azd up
     ```
 
-   - **Note**: This command provisions the necessary Azure resources and deploys the app.
+   - **Note**: Beware that the resources created by this command will incur immediate costs, primarily from the AI Search resource. These resources may accrue costs even if you interrupt the command before it is fully executed. You can run `azd down` or delete the resources manually to avoid unnecessary spending.
 
-5. After deployment, navigate to the provided URL to access the application.
+7. After deployment, navigate to the provided URL to access the application.
 
-6. To run locally, configure `app/backend/.env` with the required environment variables (detailed below) and start the app:
-
-   ```bash
-   ./scripts/start.sh
-   ```
-
-### Environment Variables
-
-Create a `.env` file with the following:
+8. To run locally, configure a `.env` file in `app/backend` with the required environment variables (detailed below):
 
 ```env
    AZURE_OPENAI_ENDPOINT=wss://<your instance name>.openai.azure.com
@@ -123,9 +126,6 @@ Once the app is running, when you navigate to the URL above you should see the s
 ![app screenshot](docs/EduEchoMain.png)
 
 Click the "Start conversation button", say "Hello!", and then ask a question about the documents in the `data` folder.
-
-`Now Hosted on Azure!`
-Visit [Edu Echo](https://capps-backend-a34xrvcygjq3u.yellowbush-ff8deaff.eastus2.azurecontainerapps.io) to see the app in action!
 
 ## Screenshots
 
